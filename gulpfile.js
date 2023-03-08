@@ -8,7 +8,7 @@ const uglify = require("gulp-uglify-es").default;
 const browserSync = require("browser-sync").create();
 
 function styles() {
-  return src(["./app/libs/swiper/swiper-bundle.min.css","./app/libs/bootstrap/css/bootstrap-reboot.min.css","./app/scss/style.scss", './app/css/main.css', './app/css/media.css'])
+  return src(["app/css/main.css", "app/css/media.css", "app/scss/style.scss"])
     .pipe(concat("style.min.css"))
     .pipe(autoprefixer({ overrideBrowserslist: ["last 10 version"] }))
     .pipe(scss({ outputStyle: "compressed" }))
@@ -17,7 +17,7 @@ function styles() {
 }
 
 function scripts() {
-  return src(["./app/libs/swiper/swiper-bundle.min.js","./app/js/main.js"])
+  return src(["./app/js/main.js"])
     .pipe(concat("main.min.js"))
     .pipe(uglify())
     .pipe(dest("app/js"))
@@ -54,9 +54,8 @@ function fonts() {
 
 function watching() {
   watch(["app/scss/style.scss"], styles);
-  watch(["app/js/main.js"], scripts);  
-  watch(["app/images/**/*.*"], images);
-  watch(["app/*.html"]).on("change", browserSync.reload);
+  watch(["app/js/main.js"], scripts);
+  watch(["app/**/*.html"]).on("change", browserSync.reload);
 }
 
 function browsersync() {
@@ -96,12 +95,14 @@ exports.watching = watching;
 exports.browsersync = browsersync;
 
 exports.build = series(cleanDist, building);
-exports.default = parallel(
+exports.upd = parallel(  
   styles,
   scripts,
   images,
   videos,
   fonts,
+);
+exports.default = parallel(  
   watching,
   browsersync
 );
